@@ -1,0 +1,8 @@
+Pytorch :
+conda install -c pytorch pytorch
+
+NLTK :
+conda install -c anaconda nltk 
+
+Word2Vec : 
+conda install -c anaconda word2vec 
