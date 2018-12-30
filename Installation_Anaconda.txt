@@ -6,3 +6,6 @@ conda install -c anaconda nltk
 
 Word2Vec : 
 conda install -c anaconda word2vec 
+
+Keras :
+conda install -c conda-forge keras 
