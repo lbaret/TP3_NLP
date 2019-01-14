@@ -16,8 +16,8 @@ T14	Material 630 635	SWNTs
 T15	Material 640 645	MWNTs
 T16	Process 661 715	the reaction of a gaseous carbon compound as feedstock
 T17	Process 741 754	fluidized bed
-T18	Process 761 851	“carpet” growth of carbon nanotubes (CNTs) from catalyst particles embedded in a substrate
-T19	Process 884 908	“catalytic gas flow CVD”
+T18	Process 761 851	"carpet" growth of carbon nanotubes (CNTs) from catalyst particles embedded in a substrate
+T19	Process 884 908	"catalytic gas flow CVD"
 T20	Task 925 979	the most effective, cheap, and scalable CVD techniques
 T21	Process 987 1019	HiPco (high-pressure CO) process
 T22	Process 1027 1069	does not use pre-formed catalyst particles

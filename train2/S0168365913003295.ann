@@ -12,7 +12,7 @@ T11	Material 407 433	nanoparticle drug carriers
 T12	Material 464 487	transferred lymphocytes
 T13	Material 521 546	supporting adjuvant drugs
 T14	Task 655 689	elimination of large tumor burdens
-T15	Process 696 740	“re-arming” of T-cells with supporting drugs
+T15	Process 696 740	"re-arming" of T-cells with supporting drugs
 T16	Material 711 718	T-cells
 T17	Material 724 740	supporting drugs
 T18	Material 789 807	targeted particles

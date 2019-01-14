@@ -5,7 +5,7 @@ T4	Material 191 204	uncoated AZ31
 T6	Process 304 316	wear process
 T7	Material 408 422	nano-particles
 T8	Process 445 478	reduction of friction coefficient
-T10	Process 658 674	“rolling effect”
+T10	Process 658 674	"rolling effect"
 T11	Material 683 702	Al2O3 nanoparticles
 T12	Material 736 759	Spherical nanoparticles
 T13	Process 823 843	friction coefficient

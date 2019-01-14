@@ -13,7 +13,7 @@ T14	Process 967 1012	narrowing in the range of unstable parameters
 T15	Process 1019 1050	decrease in amplification rates
 T16	Process 1089 1111	convective instability
 T17	Process 1197 1217	absolute instability
-T11	Process 806 850	“Bödewadt, Ekman and von Kármán” (BEK) flows
+T11	Process 806 850	"Bödewadt, Ekman and von Kármán" (BEK) flows
 T12	Process 250 294	reducing the thickness of the boundary layer
 T18	Material 1172 1187	spiral vortices
 T19	Process 1251 1279	laminar-turbulent transition

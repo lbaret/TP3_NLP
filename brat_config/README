@@ -24,7 +24,7 @@ Annotation guidelines:
 
 Entities:
 
-- When selecting entity spans, please select phrases without prepositional modifiers, e.g. in “We develop a method to measure the adsorption of water by the pores in a film”, annotate “measure the adsorption” as a task, but do not include “of water by the pores in a film” or in “based on an extended two-compartment model”, only annotate 
+- When selecting entity spans, please select phrases without prepositional modifiers, e.g. in “We develop a method to measure the adsorption of water by the pores in a film", annotate “measure the adsorption" as a task, but do not include “of water by the pores in a film" or in “based on an extended two-compartment model", only annotate
 
 - Please annotate collective noun phrases *as one entity*, e.g. ‘Type 1 and Type 2 error’ as opposed to ‘Type 1’, ‘Type 2 error’
 - If an entity is followed by an abbreviation for that entity, please annotate it as *two separate entities* and define an ‘same-as’ relation between them, e.g. ‘named entity recognition (NER)’ -> ‘named entity recognition’ same-as ‘NER’

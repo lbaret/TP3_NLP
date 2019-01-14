@@ -19,7 +19,7 @@ T19	Process 704 718	Contact forces
 T20	Material 812 829	particles centres
 T21	Process 831 857	Particle elastic stiffness
 T22	Material 831 847	Particle elastic
-T23	Process 868 884	sphere “overlap”
+T23	Process 868 884	sphere "overlap"
 T24	Process 917 932	contact damping
 T25	Material 1086 1094	particle
 T26	Material 1302 1319	particle contacts

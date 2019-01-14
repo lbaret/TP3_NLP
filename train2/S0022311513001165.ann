@@ -8,7 +8,7 @@ T7	Process 480 497	increasing energy
 T9	Process 624 631	ionized
 T10	Process 668 674	return
 T11	Task 732 760	observed prompt redeposition
-T12	Process 786 811	near-divertor” ionization
+T12	Process 786 811	near-divertor" ionization
 T13	Process 955 974	large Larmor radius
 T14	Process 1171 1198	friction with the main ions
 T15	Material 385 397	D and C ions

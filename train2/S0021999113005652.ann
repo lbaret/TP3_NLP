@@ -11,7 +11,7 @@ T10	Material 329 352	bulk-mean concentration
 T11	Material 356 357	B
 T12	Process 446 463	chemical reaction
 T13	Material 476 499	bulk-mean concentration
-T14	Material 500 504	CB⁎¯
+T14	Material 500 504	CB?-
 R1	Hyponym-of Arg1:T14 Arg2:T13	
 T15	Process 543 566	bulk-mean concentration
 T16	Material 570 571	B

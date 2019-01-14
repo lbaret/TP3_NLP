@@ -1,4 +1,4 @@
-T1	Process 37 69	“grind-free” nanoprecursor route
+T1	Process 37 69	"grind-free" nanoprecursor route
 T2	Process 73 115	direct combinatorial solid state synthesis
 T3	Material 168 241	phase-pure heterometallic Ruddlesden Popper type La4Ni3−xFexO10 materials
 T4	Process 286 309	high-throughput reactor
@@ -19,4 +19,4 @@ T17	Material 1015 1017	Ni
 T18	Material 878 880	Fe
 T19	Material 1069 1079	iron oxide
 T20	Material 967 977	EXAFS data
-T21	Task 17 115	new approach to the “grind-free” nanoprecursor route to direct combinatorial solid state synthesis
+T21	Task 17 115	new approach to the "grind-free" nanoprecursor route to direct combinatorial solid state synthesis

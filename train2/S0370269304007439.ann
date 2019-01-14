@@ -16,7 +16,7 @@ T14	Material 648 668	(soft) parton ladder
 T15	Material 691 721	projectile and target nucleons
 T16	Material 726 737	leg partons
 T17	Material 798 828	perturbative (high pt) partons
-T18	Material 854 872	“semihard pomeron”
+T18	Material 854 872	"semihard pomeron"
 T19	Material 875 1015	piece of the QCD parton ladder sandwiched between two soft pomerons which are connected to the projectile and to the target in the usual way
 R3	Hyponym-of Arg1:T18 Arg2:T19	
 T20	Material 1021 1038	spectator partons
