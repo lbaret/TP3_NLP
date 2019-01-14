@@ -27,6 +27,7 @@ class Data :
 
     data_train = []
     data_test = []
+    data_train_ann = []
 
     '''
     extention : without "."
@@ -68,6 +69,9 @@ class Data :
         os.chdir(repertory + test)
         file_form = "*.txt"     # On considère qu'on ne peut lui donner que des fichiers textes
         files = glob.glob(file_form)
+
+        if len(glob.glob("*.ann")) > 0:
+
 
         for file in files:
             f = open(repertory + test + "/" + file, 'r', encoding="utf-8")
