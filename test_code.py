@@ -2,12 +2,13 @@ from keras.models import Sequential
 from keras.layers import LSTM
 from keras.layers import Dropout
 from keras.layers import Dense
+from keras.layers import Embedding
+from keras.layers import Activation
 from keras.initializers import RandomNormal
 from keras.initializers import lecun_normal
-from keras.preprocessing import sequence
+from keras.preprocessing.text import Tokenizer
 import re
 import challenger as chal
-import numpy as np
 
 '''
     Pour l'extraction de relations, nous utiliserons un réseau de neuronnes LSTM
@@ -15,22 +16,10 @@ import numpy as np
 class ER_LSTM:
 
     def __init__(self, repertory, train, test, extension_train):
-        # *** Construction de notre Réseau de Neuronnes ***
-        initializer = RandomNormal(mean=0.0, stddev=0.05, seed=None)
-        rec_initializer = lecun_normal(seed=None)
-        er = LSTM(2, kernel_initializer=initializer, recurrent_initializer=rec_initializer, return_sequences=False)
-
-        # *** Construction du modèle ***
-        self.model = Sequential()
-        self.model.add(LSTM(100, input_shape=(1000, 1000), return_sequences=True))
-        self.model.add(Dropout(0.5))
-        self.model.add(er)
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(10, activation='softmax'))
-        self.model.compile(optimizer='adam', loss='mse', metrics=['categorical_accuracy'])
 
         # *** Récupération de nos données d'entrainement ***
-        self.data = chal.Data(repertory=repertory, train=train, test=test, extension_train=extension_train, destruct=False, split=True)
+        self.data = chal.Data(repertory=repertory, train=train, test=test, extension_train=extension_train,
+                              destruct=False, split=True)
 
         # Entrainement du réseau
         self.training = []
@@ -55,11 +44,32 @@ class ER_LSTM:
                                 y[1] = el[1]
                             if other == y[2]:
                                 y[2] = el[1]
-                        output.append(y)
+                        y_tuple = (y[0], y[1], y[2])
+                        output.append(y_tuple)
                     self.training.append((input, output))
         print(self.training)
         # === ENTRAINEMENT DE NOTRE RESEAU ===
-        data = np.array([inputs for inputs, outputs in self.training])
-        targets = np.array([outputs for inputs, outputs in self.training])
-        seq = sequence.TimeseriesGenerator(data=data, targets=targets, length=(len(data)-1))
-        self.model.fit_generator(seq)
+        # On peut utiliser une fonction utile de Keras qui convertit le texte en liste de mots embarqués (grâce au tokenizer)
+        tokenizor = Tokenizer(char_level=True, lower=False, split=' ')
+        tokenizor.fit_on_texts([inputs for inputs, outputs in self.training])  # On entraine nos words embeddings
+        x_train = tokenizor.texts_to_matrix([inputs for inputs, outputs in self.training])
+        targets = tokenizor.texts_to_matrix([outputs for inputs, outputs in self.training])
+
+        # *** Construction de notre Réseau de Neuronnes ***
+        initializer = RandomNormal(mean=0.0, stddev=0.05, seed=None)
+        rec_initializer = lecun_normal(seed=None)
+        er = LSTM(2, kernel_initializer=initializer, recurrent_initializer=rec_initializer, return_sequences=False)
+
+        # *** Construction du modèle ***
+        self.model = Sequential()
+        self.model.add(LSTM(100, input_shape=(len(x_train), len(x_train)), return_sequences=True))
+        self.model.add(Dropout(0.5))
+        self.model.add(Dense(10))
+        self.model.add(Activation('relu'))
+        self.model.add(er)
+        self.model.add(Dropout(0.5))
+        self.model.add(Dense(10))
+        self.model.add(Activation('relu'))
+        self.model.add(Embedding(1000, 64, input_length=10))
+        self.model.compile(optimizer='adam', loss='mean_squared_error', metrics=['categorical_accuracy'])
+        self.model.fit_generator(x_train, targets)
