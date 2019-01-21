@@ -1,5 +1,6 @@
 from keras.models import Sequential
 from keras.layers import LSTM
+from keras.layers import GRU
 from keras.layers import Dropout
 from keras.layers import Dense
 from keras.layers import Embedding
@@ -62,14 +63,15 @@ class ER_LSTM:
 
         # *** Construction du modèle ***
         self.model = Sequential()
-        self.model.add(Embedding(len(x_train), 64, input_length=len(x_train[0])))
-        self.model.add(LSTM(len(x_train), input_shape=(len(x_train), len(x_train)), return_sequences=True))
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(100))
+        self.model.add(Embedding(len(x_train[0]), len(x_train[0])))
+        self.model.add(GRU(100, input_shape=(len(x_train), len(x_train[0])), return_sequences=True, go_backwards=True))
+        # self.model.add(Dropout(0.5))
+        # self.model.add(Dense(50))
         self.model.add(Activation('relu'))
-        self.model.add(LSTM(len(x_train[0]), kernel_initializer=initializer, recurrent_initializer=rec_initializer, return_sequences=False))
-        self.model.add(Dropout(0.5))
-        self.model.add(Dense(len(x_train[0])))
-        self.model.add(Activation('relu'))
+        self.model.add(GRU(len(x_train[0]), kernel_initializer=initializer, recurrent_initializer=rec_initializer))
+        # self.model.add(Dropout(0.5))
+        # self.model.add(Dense(len(x_train[0])))
+        self.model.add(Activation('softmax'))
         self.model.compile(optimizer='adam', loss='mean_squared_error', metrics=['categorical_accuracy'])
         self.model.fit(x_train, targets, epochs=1)
+        print('Done !')
