@@ -7,7 +7,6 @@ from keras.layers import Activation
 from keras.initializers import RandomNormal
 from keras.initializers import lecun_normal
 from keras.preprocessing.text import Tokenizer
-from gensim.models import Word2Vec
 import re
 import challenger as chal
 
