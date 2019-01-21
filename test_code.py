@@ -7,6 +7,7 @@ from keras.layers import Activation
 from keras.initializers import RandomNormal
 from keras.initializers import lecun_normal
 from keras.preprocessing.text import Tokenizer
+from gensim.models import Word2Vec
 import re
 import challenger as chal
 
@@ -52,24 +53,24 @@ class ER_LSTM:
         # On peut utiliser une fonction utile de Keras qui convertit le texte en liste de mots embarqués (grâce au tokenizer)
         tokenizor = Tokenizer(char_level=True, lower=False, split=' ')
         tokenizor.fit_on_texts([inputs for inputs, outputs in self.training])  # On entraine nos words embeddings
+        tokenizor.fit_on_texts([outputs for inputs, outputs in self.training])  # On entraine nos words embeddings
         x_train = tokenizor.texts_to_matrix([inputs for inputs, outputs in self.training])
         targets = tokenizor.texts_to_matrix([outputs for inputs, outputs in self.training])
 
         # *** Construction de notre Réseau de Neuronnes ***
         initializer = RandomNormal(mean=0.0, stddev=0.05, seed=None)
         rec_initializer = lecun_normal(seed=None)
-        er = LSTM(2, kernel_initializer=initializer, recurrent_initializer=rec_initializer, return_sequences=False)
 
         # *** Construction du modèle ***
         self.model = Sequential()
-        self.model.add(LSTM(100, input_shape=(len(x_train), len(x_train)), return_sequences=True))
+        self.model.add(Embedding(len(x_train), 64, input_length=len(x_train[0])))
+        self.model.add(LSTM(len(x_train), input_shape=(len(x_train), len(x_train)), return_sequences=True))
         self.model.add(Dropout(0.5))
-        self.model.add(Dense(10))
+        self.model.add(Dense(100))
         self.model.add(Activation('relu'))
-        self.model.add(er)
+        self.model.add(LSTM(len(x_train[0]), kernel_initializer=initializer, recurrent_initializer=rec_initializer, return_sequences=False))
         self.model.add(Dropout(0.5))
-        self.model.add(Dense(10))
+        self.model.add(Dense(len(x_train[0])))
         self.model.add(Activation('relu'))
-        self.model.add(Embedding(1000, 64, input_length=10))
         self.model.compile(optimizer='adam', loss='mean_squared_error', metrics=['categorical_accuracy'])
-        self.model.fit_generator(x_train, targets)
+        self.model.fit(x_train, targets, epochs=1)
