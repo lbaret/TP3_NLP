@@ -51,11 +51,12 @@ class ER_LSTM:
         print(self.training)
         # === ENTRAINEMENT DE NOTRE RESEAU ===
         # On peut utiliser une fonction utile de Keras qui convertit le texte en liste de mots embarqués (grâce au tokenizer)
-        tokenizor = Tokenizer(char_level=True, lower=False, split=' ')
+        tokenizor = Tokenizer(char_level=False, lower=True, split=' ')
         tokenizor.fit_on_texts([inputs for inputs, outputs in self.training])  # On entraine nos words embeddings
-        tokenizor.fit_on_texts([outputs for inputs, outputs in self.training])  # On entraine nos words embeddings
         x_train = tokenizor.texts_to_matrix([inputs for inputs, outputs in self.training])
+        tokenizor.fit_on_texts([outputs for inputs, outputs in self.training])
         targets = tokenizor.texts_to_matrix([outputs for inputs, outputs in self.training])
+        # TODO : Créer un vecteur unique pour retrouver les hyponymes.
 
         # *** Construction de notre Réseau de Neuronnes ***
         initializer = RandomNormal(mean=0.0, stddev=0.05, seed=None)
@@ -73,5 +74,5 @@ class ER_LSTM:
         # self.model.add(Dense(len(x_train[0])))
         self.model.add(Activation('softmax'))
         self.model.compile(optimizer='adam', loss='mean_squared_error', metrics=['categorical_accuracy'])
-        self.model.fit(x_train, targets, epochs=1)
+        self.model.fit(x_train, targets, epochs=2)
         print('Done !')
