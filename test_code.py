@@ -52,11 +52,22 @@ class ER_LSTM:
         # === ENTRAINEMENT DE NOTRE RESEAU ===
         # On peut utiliser une fonction utile de Keras qui convertit le texte en liste de mots embarqués (grâce au tokenizer)
         tokenizor = Tokenizer(char_level=False, lower=True, split=' ')
-        tokenizor.fit_on_texts([inputs for inputs, outputs in self.training])  # On entraine nos words embeddings
+        # Traitement des résultats pour avoir des données interpretables
+        train_words = [inputs for inputs, outputs in self.training]
+        train_words.append(["Hyponym-of-0", "Hyponym-of-1", "Hyponym-of-2", "Hyponym-of-3", "Hyponym-of-4", "Hyponym-of-5"])   # On ajoute uniquement "Hyponym-of" à l'indexation
+        # *** Création de notre Words Embedding ***
+        tokenizor.fit_on_texts(train_words)
         x_train = tokenizor.texts_to_matrix([inputs for inputs, outputs in self.training])
-        tokenizor.fit_on_texts([outputs for inputs, outputs in self.training])
-        targets = tokenizor.texts_to_matrix([outputs for inputs, outputs in self.training])
-        # TODO : Créer un vecteur unique pour retrouver les hyponymes.
+        # *** Création de nos targets dans un format compréhensible ***
+        targets_data = []
+        for inputs, outputs in self.training:
+            unique = []
+            cnt = 0
+            for el in outputs:
+                unique.append(el[0] + "-" + str(cnt) + " " + el[1] + " " + el[2])
+                cnt += 1
+            targets_data.append(unique)
+        targets = tokenizor.texts_to_matrix(targets_data)
 
         # *** Construction de notre Réseau de Neuronnes ***
         initializer = RandomNormal(mean=0.0, stddev=0.05, seed=None)
