@@ -19,7 +19,8 @@
 
 import spacy_ner as spner
 import test_code as rext
-import challenger as chal
+# import challenger as chal
+import pytorch_test as pynn
 
 # LIMITATION IMPORTANTE POUR OBSERVER DES RESULTATS
 import sys
@@ -44,6 +45,8 @@ test_file = "semeval_articles_test"
 # spacy.test_recognizer()
 
 # *** L'extraction de relation se faire
-test = rext.ER_LSTM(repertory=repertory, train=train_file, test=test_file, extension_train="ann")
+# test = rext.ER_LSTM(repertory=repertory, train=train_file, test=test_file, extension_train="ann")
+
+test = pynn.Neural(repertory=repertory, train=train_file, test=test_file, extension_train="ann")
 
 # data = chal.Data(repertory=repertory, train=train_file, test=test_file, extension_train="ann", destruct=True, split=False)
