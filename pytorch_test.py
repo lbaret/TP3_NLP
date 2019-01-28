@@ -49,16 +49,36 @@ class Neural():
 
         # *** POS Tagging des données d'entrainement ***
             # Pour se faire il faut récupérer la partie inputs
-        inputs = [input for input, output in self.training]
+        inputs = [input for input, target in self.training]
+        targets = [target for input, target in self.training]
         tokens = []
         pos_tags = []
         for input in inputs:
             tok = word_tokenize(input)
             tokens.append(tok)
-            pos_tags.append(pos_tag(tok))
+            pos_tags.append(pos_tag(tok, tagset="universal"))
 
         # *** Création des Words Embeddings pour les tokens ***
         flat_tokens = [item for sublist in tokens for item in sublist]
+        flat_tokens.append("Hyponym-of")    # Important de lui rajouter ce mot
             # On Count pour connaitre le nombre de tokens différents
         nb_mots_diff = col.Counter(flat_tokens)
         embeds_words = nn.Embedding(num_embeddings=len(nb_mots_diff), embedding_dim=1)
+            # On peut maintenant créer les words embeddings
+        embed_inputs = []
+        for input in inputs:
+            # TODO : Créer un tensor avec des indices dans la phrase
+            embed_inputs.append(embeds_words(input))
+            # Faire la même chose avec les targets
+        embed_targets = []
+        for target in targets:
+            ent = []
+            for hyp in target:
+                ent = ent + word_tokenize(hyp[0]) + word_tokenize(hyp[1]) + word_tokenize(hyp[2])
+            emb_ent = embeds_words(ent)
+            embed_targets.append(emb_ent)
+        # *** Phase apprentissage ***
+        # TODO : Trouver un modèle : construire le réseau dans nn_config faire une fonction pour
+        n_epoch = 3
+        learning_rate = 0.01
+        # history = train(model, EMBEDDINGSMOTS, n_epoch, learning_rate)

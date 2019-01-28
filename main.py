@@ -17,8 +17,8 @@
     très utilisés dans l'univers de la NLP répond le mieux aux enjeux de cette application.
 '''
 
-import spacy_ner as spner
-import test_code as rext
+# import spacy_ner as spner
+# import test_code as rext
 # import challenger as chal
 import pytorch_test as pynn
 
