@@ -56,24 +56,23 @@ class Neural():
         words_dict = []
         for input in inputs:
             tok = word_tokenize(input)
-            the_dict = {}
-            for id, token in enumerate(tok):
-                the_dict[token] = id
-            words_dict.append(the_dict)
             tokens.append(tok)
             pos_tags.append(pos_tag(tok, tagset="universal"))
 
         # *** Création des Words Embeddings pour les tokens ***
         flat_tokens = [item for sublist in tokens for item in sublist]
         flat_tokens.append("Hyponym-of")    # Important de lui rajouter ce mot
+        the_dict = set(flat_tokens)
+        word_to_ix = {word: i for i, word in enumerate(the_dict)}
             # On Count pour connaitre le nombre de tokens différents
         nb_mots_diff = col.Counter(flat_tokens)
         embeds_words = nn.Embedding(num_embeddings=len(nb_mots_diff), embedding_dim=1)
             # On peut maintenant créer les words embeddings
         embed_inputs = []
-        for input in words_dict:
+        for input in inputs:
             # TODO : torch.tensor requiert en entrée un entier ? Revoir méthode créer word embeddings pytorch
-            the_tensor = torch.tensor(input, dtype=torch.long)
+            input = word_tokenize(input)
+            the_tensor = torch.tensor([word_to_ix[w] for w in input], dtype=torch.long)
             embed_inputs.append(embeds_words(the_tensor))
             # Faire la même chose avec les targets
         embed_targets = []
