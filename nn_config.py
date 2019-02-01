@@ -2,28 +2,34 @@
     Fichier pour mise en place de la fonction d'entrainement, de validation et de prédiction
 '''
 import random
-import numpy as np
-import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics import accuracy_score
 from deeplib.history import History
 
-def train(model, dataset, n_epoch, learning_rate):
+def train(model, dataset, batch_size, n_epoch, learning_rate):
     history = History()
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+    nb_tour = (len(dataset[0]) // batch_size) + 1
+    nb_batch_maxi = len(dataset[0]) % batch_size
 
     for i in range(n_epoch):
         model.train()
-        for j, inputs, targets in enumerate(dataset):
-            optimizer.zero_grad()
-            output = model(inputs)
+        inputs, targets = dataset
+        zip_io = list(zip(inputs, targets))
+        random.shuffle(zip_io)
+        inputs, targets = zip(*zip_io)
+        # for j in range(0, nb_tour):
+        #     nb_t_batch = batch_size if j != (nb_tour - 1) else nb_batch_maxi
+        #     for k in range(0, nb_t_batch):
+        optimizer.zero_grad()
+        output = model(list(inputs))
 
-            loss = criterion(output, targets)
-            loss.backward()
-            optimizer.step()
+        loss = criterion(output, list(targets))
+        loss.backward()
+        optimizer.step()
 
         train_acc, train_loss = validate(model, dataset)
         history.save(train_acc, train_loss, learning_rate)
@@ -53,4 +59,3 @@ def validate(model, val_loader):
         pred.extend(predictions.data.cpu().numpy().tolist())
 
     return accuracy_score(true, pred) * 100, sum(val_loss) / len(val_loss)
-# def predict(): TODO : À définir

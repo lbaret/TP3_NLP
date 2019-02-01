@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
 from nltk import pos_tag, word_tokenize
 import challenger as chal
 import collections as col
+import nn_config as nnmod
 import re
 
 # TODO : Trouver un moyen pour créer un words embedding des entités. MAJ : Toujours à réfléchir le reste est fait.
@@ -15,6 +14,7 @@ class Neural():
                               destruct=False, split=True)
 
         # *** Récupération et traitement des données d'entrainement ***
+        input_size_text = 60
         self.training = []
         full_text = []  # Nous servira pour générer les embeddings
         for data_t in self.data.data_train:
@@ -43,7 +43,7 @@ class Neural():
                         output.append(y_tuple)
                     self.training.append((input, output))
 
-        # *** Création des Words Embeddings ***
+        # *** Création des Words Embeddings *** TODO : Prendre en compte le contexte
         embeds_pos = nn.Embedding(num_embeddings=12, embedding_dim=5)
         embeds_ner = nn.Embedding(num_embeddings=4, embedding_dim=5)
 
@@ -53,7 +53,6 @@ class Neural():
         targets = [target for input, target in self.training]
         tokens = []
         pos_tags = []
-        words_dict = []
         for input in inputs:
             tok = word_tokenize(input)
             tokens.append(tok)
@@ -61,7 +60,8 @@ class Neural():
 
         # *** Création des Words Embeddings pour les tokens ***
         flat_tokens = [item for sublist in tokens for item in sublist]
-        flat_tokens.append("Hyponym-of")    # Important de lui rajouter ce mot
+        flat_tokens.append("Hyponym-of")
+        flat_tokens.append("UKNOWN")    # Important de lui rajouter ces mots
         the_dict = set(flat_tokens)
         word_to_ix = {word: i for i, word in enumerate(the_dict)}
             # On Count pour connaitre le nombre de tokens différents
@@ -70,9 +70,11 @@ class Neural():
             # On peut maintenant créer les words embeddings
         embed_inputs = []
         for input in inputs:
-            # TODO : torch.tensor requiert en entrée un entier ? Revoir méthode créer word embeddings pytorch
             input = word_tokenize(input)
-            the_tensor = torch.tensor([word_to_ix[w] for w in input], dtype=torch.long)
+            input_vec = [word_to_ix[w] for w in input]
+            if len(input_vec) < input_size_text:
+                input_vec = input_vec + [0 for i in range(len(input_vec), input_size_text)]
+            the_tensor = torch.tensor(input_vec, dtype=torch.long)
             embed_inputs.append(embeds_words(the_tensor))
             # Faire la même chose avec les targets
         embed_targets = []
@@ -80,10 +82,19 @@ class Neural():
             ent = []
             for hyp in target:
                 ent = ent + word_tokenize(hyp[0]) + word_tokenize(hyp[1]) + word_tokenize(hyp[2])
-            emb_ent = embeds_words(ent)
-            embed_targets.append(emb_ent)
+                target_vec = [word_to_ix["UKNOWN"] if w not in word_to_ix else word_to_ix[w] for w in ent]
+                if len(target_vec) < input_size_text:
+                    input_vec = target_vec + [0 for i in range(len(input_vec), input_size_text)]
+            the_tensor = torch.tensor(target_vec, dtype=torch.long)
+            embed_targets.append(embeds_words(the_tensor))
         # *** Phase apprentissage ***
         # TODO : Trouver un modèle : construire le réseau dans nn_config faire une fonction pour
         n_epoch = 3
         learning_rate = 0.01
-        # history = train(model, EMBEDDINGSMOTS, n_epoch, learning_rate)
+        batch_size = 32
+        model = nn.Sequential(nn.GRU(input_size_text, 50, bidirectional=True),
+                              nn.ReLU(),
+                              nn.Linear(50, input_size_text),
+                              nn.Softmax())
+        history = nnmod.train(model, (embed_inputs, embed_targets), batch_size, n_epoch, learning_rate)
+        history.display()
