@@ -26,7 +26,12 @@ def train(model, dataset, batch_size, n_epoch, learning_rate):
         optimizer.zero_grad()
         inputs = list(inputs)
         # TODO : Il manque une dimension à mon tensor ??? Chercher à comprendre pourquoi et ou
-        output = model(inputs)
+        for j, inp in enumerate(inputs):
+            const_list = [60 for k in range(0, len(inp))]
+            const_tens = torch.tensor(const_list, dtype=torch.long)
+            inp = torch.nn.utils.rnn.pack_padded_sequence(inp, const_tens, True)
+            inputs[j] = inp
+        output = model(inputs, [2, len(inputs), 50])
 
         loss = criterion(output, list(targets))
         loss.backward()
