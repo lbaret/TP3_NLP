@@ -88,7 +88,6 @@ class Neural():
             the_tensor = torch.tensor(target_vec, dtype=torch.long)
             embed_targets.append(embeds_words(the_tensor))
         # *** Phase apprentissage ***
-        # TODO : Trouver un modèle : construire le réseau dans nn_config faire une fonction pour
         n_epoch = 3
         learning_rate = 0.01
         batch_size = 32

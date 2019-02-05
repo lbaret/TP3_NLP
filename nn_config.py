@@ -2,10 +2,12 @@
     Fichier pour mise en place de la fonction d'entrainement, de validation et de prédiction
 '''
 import random
+import torch
 import torch.nn as nn
 import torch.optim as optim
 from sklearn.metrics import accuracy_score
 from deeplib.history import History
+import numpy as np
 
 def train(model, dataset, batch_size, n_epoch, learning_rate):
     history = History()
@@ -21,11 +23,10 @@ def train(model, dataset, batch_size, n_epoch, learning_rate):
         zip_io = list(zip(inputs, targets))
         random.shuffle(zip_io)
         inputs, targets = zip(*zip_io)
-        # for j in range(0, nb_tour):
-        #     nb_t_batch = batch_size if j != (nb_tour - 1) else nb_batch_maxi
-        #     for k in range(0, nb_t_batch):
         optimizer.zero_grad()
-        output = model(list(inputs))
+        inputs = list(inputs)
+        # TODO : Il manque une dimension à mon tensor ??? Chercher à comprendre pourquoi et ou
+        output = model(inputs)
 
         loss = criterion(output, list(targets))
         loss.backward()
